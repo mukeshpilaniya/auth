@@ -12,33 +12,33 @@ var (
 	ErrInvalidToken = errors.New("token in invalid")
 )
 
-// Payload contains payload data of the token
-type Payload struct {
+// Token contains Token data of the token
+type Token struct {
 	ID        uuid.UUID `json:"id"`
 	username  string    `json:"username"`
 	IssuedAt  time.Time `json:"issued_at"`
 	ExpiredAt time.Time `json:"expired_at"`
 }
 
-// NewPayload create a new Payload for a specific username and duration
-func NewPayload(username string, duration time.Duration) (*Payload, error) {
+// NewToken create a new Token for a specific username and duration
+func NewToken(username string, duration time.Duration) (*Token, error) {
 	tokenId, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
 
-	payload := &Payload{
+	token := &Token{
 		ID:        tokenId,
 		username:  username,
 		IssuedAt:  time.Now(),
 		ExpiredAt: time.Now().Add(duration),
 	}
-	return payload, nil
+	return token, nil
 }
 
 // Valid func check if the token is expired or not
-func (payload *Payload) Valid() error {
-	if time.Now().After(payload.ExpiredAt) {
+func (token *Token) Valid() error {
+	if time.Now().After(token.ExpiredAt) {
 		return ErrExpiredToken
 	}
 	return nil
