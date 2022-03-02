@@ -2,6 +2,7 @@ package token
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"github.com/o1egl/paseto"
 	"golang.org/x/crypto/chacha20poly1305"
 	"time"
@@ -14,8 +15,8 @@ type PasetoToken struct {
 }
 
 // GenerateAccessToken create a new token for a specific username and duration
-func (p *PasetoToken) GenerateAccessToken(username string, duration time.Duration) (string, error) {
-	token, err := NewToken(username, duration)
+func (p *PasetoToken) GenerateAccessToken(userId uuid.UUID, duration time.Duration) (string, error) {
+	token, err := NewToken(userId, duration)
 
 	if err != nil {
 		return "", err
@@ -41,7 +42,7 @@ func (p *PasetoToken) VerifyAccessToken(tokenString string) (bool, error) {
 }
 
 // GenerateRefreshToken generate a new refresh token
-func (p *PasetoToken) GenerateRefreshToken(username string, duration time.Duration) (string, error) {
+func (p *PasetoToken) GenerateRefreshToken(userId uuid.UUID, duration time.Duration) (string, error) {
 	return "", nil
 }
 

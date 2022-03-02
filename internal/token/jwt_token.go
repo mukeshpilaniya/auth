@@ -2,6 +2,7 @@ package token
 
 import (
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -9,20 +10,21 @@ type JWTToken struct {
 	secretKey []byte
 }
 
-type AccessTokenClaims struct {
-	Username string `json:"username"`
-	jwt.StandardClaims
-}
-
 // GenerateAccessToken create a new token for a specific user and durations
-func (j *JWTToken) GenerateAccessToken(username string, duration time.Duration) (string, error) {
-	claims := AccessTokenClaims{
-		username,
-		jwt.StandardClaims{
-			ExpiresAt: duration.Milliseconds(),
-			Issuer:    "pilaniya.auth.service",
-		},
+func (j *JWTToken) GenerateAccessToken(userId uuid.UUID, duration time.Duration) (string, error) {
+	tokenId, err := uuid.NewRandom()
+	if err !=nil {
+		return "",err
 	}
+	claims := &Token{
+		TokenID: tokenId,
+		UserID: userId,
+		ExpiredAt: duration.Milliseconds(),
+		IssuedAt: time.Now().Unix(),
+		Issuer: "pilaniya.auth.service",
+		Claims: make(map[string]string),
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(j.secretKey)
 	if err != nil {
@@ -32,14 +34,14 @@ func (j *JWTToken) GenerateAccessToken(username string, duration time.Duration) 
 }
 
 // GenerateRefreshToken generate a new refresh token
-func (j *JWTToken) GenerateRefreshToken(username string, duration time.Duration) (string, error) {
+func (j *JWTToken) GenerateRefreshToken(userId uuid.UUID, duration time.Duration) (string, error) {
 	return "", nil
 }
 
 // VerifyAccessToken checks if a access token is valid or not
 func (j *JWTToken) VerifyAccessToken(tokenString string) (bool, error) {
 
-	claims :=AccessTokenClaims{}
+	claims :=&Token{}
 	token, err :=jwt.ParseWithClaims(tokenString,claims, func(tkn *jwt.Token) (interface{}, error) {
 		return j.secretKey, nil
 	})

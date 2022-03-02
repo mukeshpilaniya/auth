@@ -24,6 +24,7 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 
 	err := util.ReadJSON(w, r, &userCredentials)
 	if err != nil {
+		app.errorLogger.Println(err)
 		util.BadRequest(w, r, err)
 		return
 	}
@@ -31,24 +32,24 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 	// get the user by email
 	u, err := app.DB.GetUserByEmail(userCredentials.Email)
 	if err != nil {
+		app.errorLogger.Println(err)
 		util.InvalidCredentials(w)
 		return
 	}
 
 	//check for password
 	if string(u.Password) != string(userCredentials.Password) {
-		fmt.Println("first error inline 41")
 		util.InvalidCredentials(w)
 		return
 	}
 
 	// generate token
-	tokenGenerator, err := token.NewJWTToken("12348765123487651234876512348765")
+	tokenGenerator, err := token.NewPasetoToken("12348765123487651234876512348765")
 	if err != nil {
 		app.errorLogger.Println(err)
 		return
 	}
-	token, err := tokenGenerator.GenerateAccessToken(u.Email, 5*time.Second)
+	token, err := tokenGenerator.GenerateAccessToken(u.ID, 5*time.Second)
 	if err != nil {
 		app.errorLogger.Println(err)
 		return
