@@ -12,19 +12,10 @@ type JWTToken struct {
 
 // GenerateAccessToken create a new token for a specific user and durations
 func (j *JWTToken) GenerateAccessToken(userId uuid.UUID, duration time.Duration) (string, error) {
-	tokenId, err := uuid.NewRandom()
+	claims, err := NewToken(userId,duration)
 	if err !=nil {
-		return "",err
+		return "", err
 	}
-	claims := &Token{
-		TokenID: tokenId,
-		UserID: userId,
-		ExpiredAt: duration.Milliseconds(),
-		IssuedAt: time.Now().Unix(),
-		Issuer: "pilaniya.auth.service",
-		Claims: make(map[string]string),
-	}
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(j.secretKey)
 	if err != nil {

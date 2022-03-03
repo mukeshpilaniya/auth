@@ -12,7 +12,6 @@ type User struct {
 	LastName   string    `json:"last_name"`
 	Email      string    `json:"email"`
 	Password   string    `json:"password"`
-	TokenHash  string    `json:"token_hash"`
 	IsVerified bool      `json:"is_verified"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`

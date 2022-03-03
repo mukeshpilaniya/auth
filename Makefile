@@ -19,17 +19,17 @@ up: build start
 .PHONY: build
 build:
 	@echo "Building back end..."
-	@go build -o ./bin/main ./cmd/api/*
+	@go build -o ./bin/authservice ./cmd/api/*
 	@echo "Back end built!"
 
 .PHONY: start
 start:
 	@echo "Starting back end..."
-	@ ./bin/main &
+	@ ./bin/authservice &
 	@echo "Back end started!"
 
 .PHONY: down
 down:
 	@echo "stopping backend ..."
-	@-pkill -SIGTERM -f "main"
+	@-pkill -SIGTERM -f "authservice"
 	@echo "stopped backend ..."

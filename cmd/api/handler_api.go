@@ -2,18 +2,50 @@ package main
 
 import (
 	"fmt"
+	"github.com/mukeshpilaniya/auth/internal/models"
 	"github.com/mukeshpilaniya/auth/internal/token"
 	"github.com/mukeshpilaniya/auth/internal/util"
 	"net/http"
 	"time"
 )
 
+
+type Payload struct {
+	Error   bool   `json:"error,omitempty"`
+	Message string `json:"message,omitempty"`
+	Token   string `json:"token,omitempty"`
+}
+
 func (app *application) getUserByID(w http.ResponseWriter, r *http.Request) {
 
 }
 
 func (app *application) saveUser(w http.ResponseWriter, r *http.Request) {
+ 	 var u models.User
 
+	 err :=util.ReadJSON(w,r,&u)
+	 if err != nil {
+		 app.errorLogger.Println(err)
+		 util.BadRequest(w,r,err)
+		 return
+	 }
+	 // check if the email is already present or not
+	 _, err =app.DB.GetUserByEmail(u.Email)
+	 if err == nil {
+		 app.infoLogger.Println("user with email id already present")
+		 var p Payload
+		 p.Error = true
+		 p.Message ="user with email id already present"
+		 util.WriteJSON(w,http.StatusNotAcceptable,&p)
+		 return
+	 }
+	 u, err =app.DB.SaveUser(u)
+	 if err !=nil {
+		 app.errorLogger.Println(err)
+		 util.BadRequest(w,r,err)
+		 return
+	 }
+	util.WriteJSON(w, http.StatusOK, &u)
 }
 
 func (app *application) login(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +76,7 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// generate token
-	tokenGenerator, err := token.NewPasetoToken("12348765123487651234876512348765")
+	tokenGenerator, err := token.NewJWTToken("12348765123487651234876512348765")
 	if err != nil {
 		app.errorLogger.Println(err)
 		return
@@ -57,13 +89,9 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 
 	// send response
 	w.Header().Set("Authorization", fmt.Sprintf("Bearer %s", token))
-	var payload struct {
-		Error   bool   `json:"error"`
-		Message string `json:"message"`
-		Token   string `json:"token"`
-	}
-	payload.Error = false
-	payload.Message = "token generated"
-	payload.Token = token
-	util.WriteJSON(w, http.StatusOK, &payload)
+	var p Payload
+	p.Error = false
+	p.Message = "token generated"
+	p.Token = token
+	util.WriteJSON(w, http.StatusOK, &p)
 }

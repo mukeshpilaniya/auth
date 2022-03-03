@@ -74,7 +74,7 @@ func main() {
 	err = app.serve()
 
 	if err != nil {
-		log.Fatalf(fmt.Sprintln(err))
+		log.Fatal(fmt.Sprintln(err))
 	}
 }
 
