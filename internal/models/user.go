@@ -16,3 +16,20 @@ type User struct {
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 }
+
+func NewUser(firstName string, lastName string, email string, password string)(*User, error){
+	id, err := uuid.NewUUID()
+	if err != nil{
+		return &User{}, err
+	}
+	return &User{
+		ID: id,
+		FirstName: firstName,
+		LastName: lastName,
+		Email: email,
+		Password: password,
+		IsVerified: false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}, nil
+}
