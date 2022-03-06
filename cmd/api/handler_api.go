@@ -9,17 +9,19 @@ import (
 	"time"
 )
 
-
+// Payload is a type for sending custom message
 type Payload struct {
 	Error   bool   `json:"error,omitempty"`
 	Message string `json:"message,omitempty"`
 	Token   string `json:"token,omitempty"`
 }
 
+// getUserByID retrieve a user id of valid user
 func (app *application) getUserByID(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// saveUser method save user into database
 func (app *application) saveUser(w http.ResponseWriter, r *http.Request) {
  	 var u models.User
 
@@ -48,7 +50,8 @@ func (app *application) saveUser(w http.ResponseWriter, r *http.Request) {
 	util.WriteJSON(w, http.StatusOK, &u)
 }
 
-func (app *application) login(w http.ResponseWriter, r *http.Request) {
+// generateAccessToken generate access token for a valid user
+func (app *application) generateAccessToken(w http.ResponseWriter, r *http.Request) {
 	var userCredentials struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -94,4 +97,9 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 	p.Message = "token generated"
 	p.Token = token
 	util.WriteJSON(w, http.StatusOK, &p)
+}
+
+// generateRefreshToken generate refresh token from a valid access token
+func (app *application) generateRefreshToken(w http.ResponseWriter, r *http.Request ){
+
 }

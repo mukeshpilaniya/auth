@@ -17,6 +17,7 @@ type User struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 }
 
+// NewUser return an instance of user
 func NewUser(firstName string, lastName string, email string, password string)(*User, error){
 	id, err := uuid.NewUUID()
 	if err != nil{
