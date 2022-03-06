@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"errors"
@@ -14,7 +14,8 @@ type Config struct {
 	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
 }
 
-func LoadConfig(path string, configName string, configType string) ( Config, error) {
+// LoadConfig load the  config file form specified path
+func LoadConfig(path string, configName string, configType string) (Config, error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigName(configName)
 	viper.SetConfigType(configType)

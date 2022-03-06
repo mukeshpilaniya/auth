@@ -1,10 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"github.com/mukeshpilaniya/auth/config"
 	"github.com/mukeshpilaniya/auth/internal/drivers"
 	"github.com/mukeshpilaniya/auth/internal/models"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"os"
@@ -47,10 +48,15 @@ func (app *application) serve() error {
 
 func main() {
 	var cfg APIConfig
-	flag.IntVar(&cfg.port, "port", 8081, "Server port to listen on")
-	flag.StringVar(&cfg.env, "env", "development", "Application environment {development | production | maintenance}")
-	flag.StringVar(&cfg.db.dsn, "dsn", "postgres://pilaniya:pilaniya@localhost:5432/auth?sslmode=disable", "DSN")
-	flag.Parse()
+	_, err := config.LoadConfig(".", "config", "env")
+
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	cfg.port = viper.GetInt("API_SERVER_PORT")
+	cfg.env = viper.GetString("APPLICATION_ENV")
+	cfg.db.dsn = viper.GetString("DB_DSN")
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
@@ -77,5 +83,3 @@ func main() {
 		log.Fatal(fmt.Sprintln(err))
 	}
 }
-
-
