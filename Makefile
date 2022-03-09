@@ -18,13 +18,13 @@ up: build start
 
 .PHONY: build
 build:
-	@echo "Building back end..."
+	@echo "Building backend..."
 	@go build -o ./bin/authservice ./cmd/api/*
 	@echo "Back end built!"
 
 .PHONY: start
 start:
-	@echo "Starting back end..."
+	@echo "Starting backend..."
 	@ ./bin/authservice &
 	@echo "Back end started!"
 

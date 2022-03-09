@@ -3,7 +3,7 @@ package token
 import (
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
-	"time"
+	"github.com/spf13/viper"
 )
 
 type JWTToken struct {
@@ -11,7 +11,8 @@ type JWTToken struct {
 }
 
 // GenerateAccessToken create a new token for a specific user and durations
-func (j *JWTToken) GenerateAccessToken(userId uuid.UUID, duration time.Duration) (string, error) {
+func (j *JWTToken) GenerateAccessToken(userId uuid.UUID) (string, error) {
+	duration :=viper.GetDuration("ACCESS_TOKEN_DURATION")
 	claims, err := NewToken(userId,duration)
 	if err !=nil {
 		return "", err
@@ -25,7 +26,7 @@ func (j *JWTToken) GenerateAccessToken(userId uuid.UUID, duration time.Duration)
 }
 
 // GenerateRefreshToken generate a new refresh token
-func (j *JWTToken) GenerateRefreshToken(userId uuid.UUID, duration time.Duration) (string, error) {
+func (j *JWTToken) GenerateRefreshToken(userId uuid.UUID) (string, error) {
 	return "", nil
 }
 

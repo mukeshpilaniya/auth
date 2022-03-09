@@ -6,7 +6,6 @@ import (
 	"github.com/mukeshpilaniya/auth/internal/token"
 	"github.com/mukeshpilaniya/auth/internal/util"
 	"net/http"
-	"time"
 )
 
 // Payload is a type for sending custom message
@@ -84,7 +83,7 @@ func (app *application) generateAccessToken(w http.ResponseWriter, r *http.Reque
 		app.errorLogger.Println(err)
 		return
 	}
-	token, err := tokenGenerator.GenerateAccessToken(u.ID, 5*time.Second)
+	token, err := tokenGenerator.GenerateAccessToken(u.ID)
 	if err != nil {
 		app.errorLogger.Println(err)
 		return
