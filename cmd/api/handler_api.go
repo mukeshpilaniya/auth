@@ -5,6 +5,7 @@ import (
 	"github.com/mukeshpilaniya/auth/internal/models"
 	"github.com/mukeshpilaniya/auth/internal/token"
 	"github.com/mukeshpilaniya/auth/internal/util"
+	"github.com/spf13/viper"
 	"net/http"
 )
 
@@ -17,7 +18,21 @@ type Payload struct {
 
 // getUserByID retrieve a user id of valid user
 func (app *application) getUserByID(w http.ResponseWriter, r *http.Request) {
-
+	var u models.User
+	err :=util.ReadJSON(w,r,&u)
+	fmt.Println(u)
+	if err != nil {
+		app.errorLogger.Println(err)
+		util.BadRequest(w,r,err)
+		return
+	}
+	user, err :=app.DB.GetUserByID(u.ID)
+	if err !=nil {
+		app.errorLogger.Println(err)
+		util.BadRequest(w,r,err)
+		return
+	}
+	util.WriteJSON(w, http.StatusOK, &user)
 }
 
 // saveUser method save user into database
@@ -41,11 +56,11 @@ func (app *application) saveUser(w http.ResponseWriter, r *http.Request) {
 		 return
 	 }
 	 u, err =app.DB.SaveUser(u)
-	 if err !=nil {
-		 app.errorLogger.Println(err)
-		 util.BadRequest(w,r,err)
-		 return
-	 }
+	if err !=nil {
+		app.errorLogger.Println(err)
+		util.BadRequest(w,r,err)
+		return
+	}
 	util.WriteJSON(w, http.StatusOK, &u)
 }
 
@@ -78,7 +93,7 @@ func (app *application) generateAccessToken(w http.ResponseWriter, r *http.Reque
 	}
 
 	// generate token
-	tokenGenerator, err := token.NewJWTToken("12348765123487651234876512348765")
+	tokenGenerator, err := token.NewJWTToken(viper.GetString("TOKEN_SECRET_KEY"))
 	if err != nil {
 		app.errorLogger.Println(err)
 		return

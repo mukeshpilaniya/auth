@@ -16,6 +16,9 @@ MAKEFLAGS += --warn-undefined-variables
 .PHONY: up
 up: build start
 
+.PHONY: down
+down: stop
+
 .PHONY: build
 build:
 	@echo "Building backend..."
@@ -28,8 +31,8 @@ start:
 	@ ./bin/authservice &
 	@echo "Back end started!"
 
-.PHONY: down
-down:
+.PHONY: stop
+stop:
 	@echo "stopping backend ..."
 	@-pkill -SIGTERM -f "authservice"
 	@echo "stopped backend ..."

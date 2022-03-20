@@ -1,0 +1,13 @@
+create_table("users") {
+  t.Column("id", "uuid", {primary: true})
+  t.Column("first_name", "string", {"size": 255})
+  t.Column("last_name", "string", {"size": 255})
+  t.Column("email", "string", {})
+  t.Column("password", "string", {"size": 60})
+  t.Column("is_verified","bool",{"default": false})
+}
+
+sql("alter table users alter column created_at set default now();")
+sql("alter table users alter column updated_at set default now();")
+
+sql("insert into users (id, first_name, last_name, email, password, is_verified) values ('c6c24bd8-a5e1-11ec-946b-86023e8131c0','mukesh','pilaniya','pilaniya@gmail.com', 'pilaniya',false);")

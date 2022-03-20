@@ -4,11 +4,17 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/spf13/viper"
+	"sync"
 )
 
 type JWTToken struct {
 	secretKey []byte
 }
+
+var (
+	jwtTokenSingleton *JWTToken
+	once sync.Once
+)
 
 // GenerateAccessToken create a new token for a specific user and durations
 func (j *JWTToken) GenerateAccessToken(userId uuid.UUID) (string, error) {
@@ -52,8 +58,12 @@ func (j *JWTToken) VerifyRefreshToken(tokenString string) (*Token, error) {
 }
 
 func NewJWTToken(secretKey string) (*JWTToken, error) {
-	j := &JWTToken{
-		secretKey: []byte(secretKey),
+	if jwtTokenSingleton==nil{
+		once.Do(func() {
+			jwtTokenSingleton = &JWTToken{
+				secretKey: []byte(secretKey),
+			}
+		})
 	}
-	return j, nil
+	return jwtTokenSingleton, nil
 }
