@@ -7,7 +7,7 @@ import (
 
 // User is a type for all users
 type User struct {
-	ID         uuid.UUID `json:"id"`
+	ID         uuid.UUID `json:"id,omitempty"`
 	FirstName  string    `json:"first_name"`
 	LastName   string    `json:"last_name"`
 	Email      string    `json:"email"`

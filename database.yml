@@ -1,0 +1,7 @@
+development:
+  dialect: postgres
+  database: auth
+  user: pilaniya
+  password: pilaniya
+  host: 127.0.0.1
+  pool: 5

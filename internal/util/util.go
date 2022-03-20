@@ -11,6 +11,12 @@ var (
 	ErrInvalidJSONBody = errors.New("body must have a single Json value")
 )
 
+// Payload is a struct for sending custom message
+type Payload struct {
+	Error   bool   `json:"error"`
+	Message string `json:"message"`
+}
+
 // ReadJSON reads json from request body into data. only support a single json value in the body
 func ReadJSON(w http.ResponseWriter, r *http.Request, data interface{}) error {
 	maxBytes := 1048576
@@ -48,10 +54,7 @@ func WriteJSON(w http.ResponseWriter, status int, data interface{}, headers ...h
 
 // BadRequest sends a Json response with status http.StatusBadRequest, describing the error
 func BadRequest(w http.ResponseWriter, r *http.Request, err error) error {
-	var payload struct {
-		Error   bool   `json:"error"`
-		Message string `json:"message"`
-	}
+	var payload Payload
 	payload.Error=true
 	payload.Message=err.Error()
 
@@ -67,13 +70,9 @@ func BadRequest(w http.ResponseWriter, r *http.Request, err error) error {
 
 // InvalidCredentials send a Json response with status http.StatusUnauthorized, describing the error
 func InvalidCredentials (w http.ResponseWriter) error{
-	var payload struct {
-		Error   bool   `json:"error"`
-		Message string `json:"message"`
-	}
+	var payload Payload
 	payload.Error=true
 	payload.Message="invalid authentication credentials"
-
 
 	out, err :=json.MarshalIndent(&payload,"","\t")
 	if err != nil {

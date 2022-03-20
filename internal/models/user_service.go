@@ -7,7 +7,7 @@ import (
 )
 
 // GetUserByID return a user by user id
-func (m *DBModel) GetUserByID(id int64) (User, error) {
+func (m *DBModel) GetUserByID(id uuid.UUID) (User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
