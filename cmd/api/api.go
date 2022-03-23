@@ -16,9 +16,11 @@ const (
 	version = "1.0.0"
 )
 
+// APIConfig is config for API server
 type APIConfig struct {
 	port int
 	env  string
+	version string
 	db   struct {
 		dsn string
 	}
@@ -28,7 +30,6 @@ type application struct {
 	config      APIConfig
 	infoLogger  *log.Logger
 	errorLogger *log.Logger
-	version     string
 	DB          models.DBModel
 }
 
@@ -57,6 +58,7 @@ func main() {
 	cfg.port = viper.GetInt("API_SERVER_PORT")
 	cfg.env = viper.GetString("APPLICATION_ENV")
 	cfg.db.dsn = viper.GetString("DB_DSN")
+	cfg.version = viper.GetString("API_VERSION")
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
@@ -71,7 +73,6 @@ func main() {
 		config:      cfg,
 		infoLogger:  infoLog,
 		errorLogger: errorLog,
-		version:     version,
 		DB: models.DBModel{
 			DB: conn,
 		},
