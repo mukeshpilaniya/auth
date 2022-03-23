@@ -7,11 +7,12 @@ import (
 )
 
 type Config struct {
-	DBDriver             string        `mapstructure:"DB_DRIVER""`
-	ServerPort           string        `mapstructure:"SERVER_PORT"`
-	TokenSecretKey       string        `mapstructure:"TOKEN_SECRET_KEY"`
-	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
-	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
+	DBDriver              string        `mapstructure:"DB_DRIVER""`
+	ServerPort            string        `mapstructure:"SERVER_PORT"`
+	AccessTokenSecretKey  string        `mapstructure:"ACCESS_TOKEN_SECRET_KEY"`
+	RefreshTokenSecretKey string        `mapstructure:"REFRESH_TOKEN_SECRET_KEY"`
+	AccessTokenDuration   time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration  time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
 }
 
 // LoadConfig load the  config file form specified path

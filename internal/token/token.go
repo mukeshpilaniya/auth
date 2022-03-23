@@ -9,7 +9,7 @@ import (
 // Different types of errors return by the VerifyToken func
 var (
 	ErrExpiredToken = errors.New("token is expired")
-	ErrInvalidToken = errors.New("token in invalid")
+	ErrInvalidToken = errors.New("token is invalid")
 )
 
 // Token is a datatype of type token
