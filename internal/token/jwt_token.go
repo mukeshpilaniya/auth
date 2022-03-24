@@ -19,9 +19,9 @@ var (
 
 // GenerateAccessToken create a new token for a specific user and durations
 func (j *JWTToken) GenerateAccessToken(userId uuid.UUID) (string, error) {
-	duration :=viper.GetDuration("ACCESS_TOKEN_DURATION")
-	claims, err := NewToken(userId,duration)
-	if err !=nil {
+	duration := viper.GetDuration("ACCESS_TOKEN_DURATION")
+	claims, err := NewToken(userId, duration)
+	if err != nil {
 		return "", err
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -34,9 +34,9 @@ func (j *JWTToken) GenerateAccessToken(userId uuid.UUID) (string, error) {
 
 // GenerateRefreshToken generate a new refresh token
 func (j *JWTToken) GenerateRefreshToken(userId uuid.UUID) (string, error) {
-	duration :=viper.GetDuration("REFRESH_TOKEN_DURATION")
-	claims, err := NewToken(userId,duration)
-	if err !=nil {
+	duration := viper.GetDuration("REFRESH_TOKEN_DURATION")
+	claims, err := NewToken(userId, duration)
+	if err != nil {
 		return "", err
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -48,37 +48,37 @@ func (j *JWTToken) GenerateRefreshToken(userId uuid.UUID) (string, error) {
 }
 
 // VerifyAccessToken checks if a access token is valid or not
-func (j *JWTToken) VerifyAccessToken(tokenString string) (uuid.UUID,bool, error) {
+func (j *JWTToken) VerifyAccessToken(tokenString string) (uuid.UUID, bool, error) {
 	var id uuid.UUID
-	claims :=&Token{}
-	token, err :=jwt.ParseWithClaims(tokenString,claims, func(tkn *jwt.Token) (interface{}, error) {
+	claims := &Token{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(tkn *jwt.Token) (interface{}, error) {
 		return j.secretKey, nil
 	})
-	if err !=nil {
-		return id,false, err
+	if err != nil {
+		return id, false, err
 	}
-	if !token.Valid{
-		return id,false, jwt.ErrSignatureInvalid
+	if !token.Valid {
+		return id, false, jwt.ErrSignatureInvalid
 	}
 	id = claims.UserID
-	return id,true, nil
+	return id, true, nil
 }
 
 // VerifyRefreshToken checks if a refresh token is valid or not
-func (j *JWTToken) VerifyRefreshToken(tokenString string) (uuid.UUID,bool, error) {
+func (j *JWTToken) VerifyRefreshToken(tokenString string) (uuid.UUID, bool, error) {
 	var id uuid.UUID
-	claims :=&Token{}
-	token, err :=jwt.ParseWithClaims(tokenString,claims, func(tkn *jwt.Token) (interface{}, error) {
+	claims := &Token{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(tkn *jwt.Token) (interface{}, error) {
 		return j.secretKey, nil
 	})
-	if err !=nil {
-		return id,false, err
+	if err != nil {
+		return id, false, err
 	}
-	if !token.Valid{
-		return id,false, jwt.ErrSignatureInvalid
+	if !token.Valid {
+		return id, false, jwt.ErrSignatureInvalid
 	}
-	id =claims.UserID
-	return  id,true, nil
+	id = claims.UserID
+	return id, true, nil
 }
 
 //// NewJWTAccessToken return a singleton instance of type JWTToken
@@ -107,12 +107,8 @@ func (j *JWTToken) VerifyRefreshToken(tokenString string) (uuid.UUID,bool, error
 
 // NewJWTToken return a singleton instance of type JWTToken
 func NewJWTToken(secretKey string) (*JWTToken, error) {
-	if jwtTokenSingleton==nil{
-		once.Do(func() {
-			jwtTokenSingleton = &JWTToken{
-				secretKey: []byte(secretKey),
-			}
-		})
+	jwtTokenSingleton = &JWTToken{
+		secretKey: []byte(secretKey),
 	}
 	return jwtTokenSingleton, nil
 }

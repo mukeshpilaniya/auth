@@ -36,3 +36,8 @@ stop:
 	@echo "stopping backend ..."
 	@-pkill -SIGTERM -f "authservice"
 	@echo "stopped backend ..."
+
+.PHONY: docker-build
+docker-build:
+	@echo "building docker images from source code ..."
+	@docker build -t authservice .
