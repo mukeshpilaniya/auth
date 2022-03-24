@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/mukeshpilaniya/auth/internal/models"
 	"github.com/mukeshpilaniya/auth/internal/token"
@@ -33,7 +32,6 @@ var (
 func (app *application) getUserByID(w http.ResponseWriter, r *http.Request) {
 	var u models.User
 	err := util.ReadJSON(w, r, &u)
-	fmt.Println(u)
 	if err != nil {
 		app.errorLogger.Println(err)
 		util.BadRequest(w, r, err)
@@ -172,7 +170,6 @@ func (app *application) validateRefreshToken(w http.ResponseWriter, r *http.Requ
 		return id,false, err
 	}
 	secretKey := viper.GetString("REFRESH_TOKEN_SECRET_KEY")
-	fmt.Println(secretKey)
 	jwtToken, err := token.NewJWTToken(secretKey)
 	if err != nil {
 		util.WriteJSON(w, http.StatusNotAcceptable, util.Payload{Message: "internal server error", Error: true}, nil)
